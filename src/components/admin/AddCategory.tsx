@@ -22,7 +22,7 @@ const AddCategoryForm = () => {
             return;
         }
         axios
-            .post<ICategoryItem>("http://localhost:8000/api/category", category)
+            .post<ICategoryItem>("http://phplaravel-993214-3489827.cloudwaysapps.com/api/category", category)
             .then((response) => {
                 setCategory({ id:0,name: "", description: "" });
                 navigate("/Admin/DefaultCategory");
