@@ -38,7 +38,7 @@ const DefaultCategory = () => {
     const dataView = data.map((category) => (
         <li key={category.id}><a>{category.name}</a></li>
     ));
-    const pageRange = 2; // number of pages to show before and after the current page
+    const pageRange = 2;  
     const startPage = Math.max(1, current_page - pageRange);
     const endPage = Math.min(last_page, current_page + pageRange);
 
