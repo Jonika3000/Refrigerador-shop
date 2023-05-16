@@ -3,6 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { ICategoryItem } from "../../model";
 import { useNavigate } from "react-router-dom";
+import http from "../../http";
 
 const AddCategoryForm = () => {
     const [validated, setValidated] = useState(false);
@@ -10,6 +11,7 @@ const AddCategoryForm = () => {
         id:0,
         name: "",
         description: "",
+        slug:""
     });
     const navigate = useNavigate();
 
@@ -21,10 +23,13 @@ const AddCategoryForm = () => {
             setValidated(true);
             return;
         }
-        axios
+        http
             .post<ICategoryItem>("http://phplaravel-993214-3489827.cloudwaysapps.com/api/category", category)
             .then((response) => {
-                setCategory({ id:0,name: "", description: "" });
+                setCategory({
+                    id: 0, name: "", description: "",
+                    slug: ""
+});
                 navigate("/Admin/DefaultCategory");
             })
             .catch((error) => console.log(error));

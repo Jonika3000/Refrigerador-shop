@@ -4,6 +4,8 @@ import { ICategoryItem, ICategoryResponse, ICategorySearch } from "../../model";
 import axios from "axios";
 import classNames from "classnames";
 import { Link, useSearchParams } from "react-router-dom";
+import { APP_ENV } from "../../env";
+import http from "../../http";
 
 const DefaultCategory = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -21,8 +23,8 @@ const DefaultCategory = () => {
     });
 
     useEffect(() => {
-        axios
-            .get<ICategoryResponse>("http://127.0.0.1:8000/api/category", {
+        http
+            .get<ICategoryResponse>(`api/category`, {
                 params: search,
             })
             .then((resp) => {

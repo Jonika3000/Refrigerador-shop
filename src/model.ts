@@ -1,7 +1,8 @@
 export interface ICategoryItem {
     id: number,
     name: string, 
-    description: string
+    description: string,
+    slug:string
 } 
 
 export interface ICategoryResponse {
@@ -15,3 +16,11 @@ export interface ICategoryResponse {
 export interface ICategorySearch {
     page?: number | string | null
 }
+export interface IItem {
+    id: number,
+    name: string,
+    description: string,
+    price: number,
+    imagePrev: string,
+    categoryId: number
+} 

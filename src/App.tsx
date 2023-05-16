@@ -6,6 +6,7 @@ import HomePage from './components/HomePage';
 import DefaultCategory from './components/default/DefaultCategory';
 import AdminLayout from './components/admin/AdminLayout';
 import AddCategory from './components/admin/AddCategory';
+import AddItemForm from './components/admin/AddItem';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/Admin/" element={<AdminLayout />}>
           <Route index element={<HomePage />} /> 
           <Route path="AddCategory" element={<AddCategory />} />
+          <Route path="AddItem" element={<AddItemForm/>} />
           <Route path="DefaultCategory" element={<DefaultCategory />} />
         </Route>
       </Routes>
