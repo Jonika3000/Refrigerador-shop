@@ -12,6 +12,8 @@ const HeaderAdmin = () => {
                     <li><a>About</a></li>
                     <li><Link to="DefaultCategory"><a>Shop</a></Link></li>
                     <li><Link to="AddCategory"><a>Add Category</a></Link></li>
+                    <li><Link to="AddItem"><a>Add Item</a></Link></li>
+                    <li><Link to="DeleteItem"><a>Delete Item</a></Link></li>
                 </ul>
             </nav>
         </div>

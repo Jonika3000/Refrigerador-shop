@@ -1,19 +1,15 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
-import axios from "axios";
-import { ICategoryItem, IItem } from "../../model";
-import { useNavigate } from "react-router-dom";
-import { APP_ENV } from "../../env";
+import { Button, Form } from "react-bootstrap"; 
+import { ICategoryItem, IItem } from "../../model"; 
 import http from "../../http";
 
 const AddItemForm = () => {
-    const [imageFile, setImageFile] = useState<File | null>(null);
     const [validated, setValidated] = useState(false);
     const [item, setItem] = useState<IItem>({
         id: 0,
         name: "",
         description: "",
-        imagePrev:"",
+        imagePrev: null,
         price:0,
         categoryId: 0
     });
@@ -21,7 +17,7 @@ const AddItemForm = () => {
         event.preventDefault();
         event.stopPropagation();
         const form = event.currentTarget;
-        if (form.checkValidity() === false) {
+        if (form.checkValidity() === false || !item.categoryId) {
             setValidated(true);
             return;
         }
@@ -29,22 +25,27 @@ const AddItemForm = () => {
         formData.append('name', item.name);
         formData.append('description', item.description);
         formData.append('price', item.price.toString());
-        formData.append('categoryId', item.categoryId.toString());
-        
-        if (imageFile != null) { 
-            formData.append('imagePrev', imageFile);
-            console.log(item);
+        formData.append('categoryId', item.categoryId.toString()); 
+        if (item.imagePrev != null) {
+            formData.append('image', item.imagePrev, item.imagePrev.name);
         } 
-        http.post<IItem>('api/AddItem', formData)
+       console.log( Array.from(formData));
+        http.post<IItem>('api/AddItem', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        })
             .then((response) => {
                 setItem({
                     id: 0,
                     name: "",
                     description: "",
-                    imagePrev: "",
+                    imagePrev: null,
                     price: 0,
                     categoryId: 0
                 });
+                form.reset();  
+                setValidated(false);
             })
             .catch((error) => console.log(error));
     };
@@ -63,7 +64,7 @@ const AddItemForm = () => {
             ...item,
             categoryId: parseInt(event.target.value)  
         }); 
-        console.log(item.categoryId);
+        console.log('categoryID'+item.categoryId);
     } 
     const [list, setList] = useState<ICategoryItem[]>([]);
     useEffect(() => {
@@ -112,19 +113,15 @@ const AddItemForm = () => {
                             accept=".jpg,.png,.jpeg"
                             onChange={(event: ChangeEvent<HTMLInputElement>) => {
                                 const file = event.target.files?.[0];
-                                if (file) {
-                                    const imageUrl = URL.createObjectURL(file); 
-                                    setImageFile(file);
+                                if (file) {  
                                     setItem({
                                         ...item,
-                                        imagePrev: imageUrl  
+                                        imagePrev: file
                                     });
                                 }
                             }}
-                        />
-
-                    </Form.Group>
-
+                        /> 
+                    </Form.Group> 
                     <Form.Group className="mb-3" controlId="formItemDescription">
                         <Form.Label style={{
                             color: 'white',
@@ -144,17 +141,12 @@ const AddItemForm = () => {
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formItemCategory">
-                        <Form.Label style={{
-                            color: 'white',
-                            fontSize: "30px"
-                        }}>Item category</Form.Label>
-                        <Form.Select aria-label="Item category" onChange={ComboBoxChange}>
+                        <Form.Label style={{ color: 'white', fontSize: "30px" }}>Item category</Form.Label>
+                        <Form.Select aria-label="Item category" onChange={ComboBoxChange} required name="FormSelectCategory">
+                            <option value="">Choose...</option>
                             {dataCategory}
                         </Form.Select>
-                        <Form.Control.Feedback
-                            type="invalid">
-                            Please enter a item description.
-                        </Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">Please select a category.</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formItemPrice">
                         <Form.Label style={{

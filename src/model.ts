@@ -21,6 +21,6 @@ export interface IItem {
     name: string,
     description: string,
     price: number,
-    imagePrev: string,
+    imagePrev:File|null,
     categoryId: number
 } 

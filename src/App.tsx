@@ -7,6 +7,9 @@ import DefaultCategory from './components/default/DefaultCategory';
 import AdminLayout from './components/admin/AdminLayout';
 import AddCategory from './components/admin/AddCategory';
 import AddItemForm from './components/admin/AddItem';
+import ShowItems from './components/default/ShowItems';
+import DeleteItem from './components/admin/DeleteItem';
+import EditItem from './components/admin/EditItem';
 
 function App() {
   return (
@@ -15,11 +18,14 @@ function App() {
         <Route path="/" element={<DefaultLayout />}>
           <Route index element={<HomePage />} />
           <Route path="/DefaultCategory" element={<DefaultCategory />} />
+          <Route path='/category/:slug' element={<ShowItems />} />
         </Route>
         <Route path="/Admin/" element={<AdminLayout />}>
           <Route index element={<HomePage />} /> 
           <Route path="AddCategory" element={<AddCategory />} />
           <Route path="AddItem" element={<AddItemForm/>} />
+          <Route path= 'EditItem' element={<EditItem />} />
+          <Route path="DeleteItem" element={<DeleteItem />} />
           <Route path="DefaultCategory" element={<DefaultCategory />} />
         </Route>
       </Routes>
