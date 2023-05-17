@@ -17,10 +17,11 @@ const AddItemForm = () => {
         event.preventDefault();
         event.stopPropagation();
         const form = event.currentTarget;
+        /* валідація */
         if (form.checkValidity() === false || !item.categoryId) {
             setValidated(true);
             return;
-        }
+        } 
         const formData = new FormData();
         formData.append('name', item.name);
         formData.append('description', item.description);
@@ -30,12 +31,15 @@ const AddItemForm = () => {
             formData.append('image', item.imagePrev, item.imagePrev.name);
         } 
        console.log( Array.from(formData));
+      /*  виконання пост операції */
         http.post<IItem>('api/AddItem', formData, {
+           /*  без цього не буде працювати робота з файлами (добавлення параметрів)*/
             headers: {
                 "Content-Type": "multipart/form-data"
             }
-        })
+        }) 
             .then((response) => {
+                /* обнуления данних */
                 setItem({
                     id: 0,
                     name: "",
@@ -58,7 +62,7 @@ const AddItemForm = () => {
             [name]: value,
         }));
     };
-
+    /* триггер на зміну данних в комбо боксі */
     function ComboBoxChange(event: React.ChangeEvent<HTMLSelectElement>) {
         setItem({
             ...item,
@@ -66,6 +70,7 @@ const AddItemForm = () => {
         }); 
         console.log('categoryID'+item.categoryId);
     } 
+    /* отримання данних категорій з серверу */
     const [list, setList] = useState<ICategoryItem[]>([]);
     useEffect(() => {
         http.get<ICategoryItem[]>('api/clearCategory')
@@ -77,7 +82,7 @@ const AddItemForm = () => {
                 console.log("Bad request", bad);
             }); 
     }, []);
-
+   /*  перебор масиву данних категорій*/
     const dataCategory = list.map((category) => (
         <option key={category.id} value={category.id}>{category.name}</option>
     ));
@@ -108,6 +113,7 @@ const AddItemForm = () => {
                             color: 'white',
                             fontSize: "30px"
                         }}>Item image</Form.Label>
+                      {/*   добавлення файлів, вибір із масиву 1 елемент, встановлення змінни файла */}
                         <Form.Control
                             type="file"
                             accept=".jpg,.png,.jpeg"
@@ -142,6 +148,7 @@ const AddItemForm = () => {
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formItemCategory">
                         <Form.Label style={{ color: 'white', fontSize: "30px" }}>Item category</Form.Label>
+                       {/*  комбо бокс категорій */}
                         <Form.Select aria-label="Item category" onChange={ComboBoxChange} required name="FormSelectCategory">
                             <option value="">Choose...</option>
                             {dataCategory}
