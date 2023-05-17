@@ -49,7 +49,7 @@ const EditItem = () => {
             formData.append("categoryId", EditItem.categoryId.toString());
             console.log(Array.from(formData));
             http
-                .put("api/itemUpdate/" + EditItem.id, formData,{
+                .post("api/itemUpdate/" + EditItem.id, formData,{
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }
