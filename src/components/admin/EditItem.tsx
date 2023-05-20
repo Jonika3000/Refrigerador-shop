@@ -1,8 +1,8 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { IItem } from "../../model";
 import http from "../../http";
 import { Button, Form } from "react-bootstrap";
- 
+
 
 const EditItem = () => {
     const [AllItems, SetAllItems] = useState<IItem[]>([]);
@@ -21,7 +21,7 @@ const EditItem = () => {
     useEffect(() => {
         http
             .get<IItem[]>("api/clearItems")
-            .then((response) => { 
+            .then((response) => {
                 SetAllItems(response.data);
             })
             .catch((error) => {
@@ -37,7 +37,7 @@ const EditItem = () => {
 
         if (event.currentTarget.checkValidity() === true) {
             const formData = new FormData();
-            const form = event.currentTarget; 
+            const form = event.currentTarget;
             if (image != null) {
                 console.log("added");
                 formData.append("imagePrev", image, image.name);
@@ -49,7 +49,7 @@ const EditItem = () => {
             formData.append("categoryId", EditItem.categoryId.toString());
             console.log(Array.from(formData));
             http
-                .post("api/itemUpdate/" + EditItem.id, formData,{
+                .post("api/itemUpdate/" + EditItem.id, formData, {
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }
@@ -103,72 +103,72 @@ const EditItem = () => {
 
     return (
         <div className="MainHome">
-            <div className="CenterContent"> 
-            <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                <Form.Group>
-                    <Form.Label>Item</Form.Label>
-                    <Form.Select
-                        aria-label="Item"
-                        onChange={ComboBoxChange}
-                        required
-                        name="FormSelectItem"
-                        value={selectedItemId || ""}
-                    >
-                        <option value="">Choose...</option>
-                        {dataItems}
-                    </Form.Select>
-                </Form.Group>
+            <div className="CenterContent">
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                    <Form.Group>
+                        <Form.Label>Item</Form.Label>
+                        <Form.Select
+                            aria-label="Item"
+                            onChange={ComboBoxChange}
+                            required
+                            name="FormSelectItem"
+                            value={selectedItemId || ""}
+                        >
+                            <option value="">Choose...</option>
+                            {dataItems}
+                        </Form.Select>
+                    </Form.Group>
 
-                <Form.Group>
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder="Enter item name"
-                        name="name"
-                        value={EditItem.name}
-                        required
-                        onChange={handleChange}
-                        disabled={!selectedItemId}
-                    />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control
-                        as="textarea"
-                        placeholder="Enter item description"
-                        name="description"
-                        value={EditItem.description}
-                        required
-                        onChange={handleChange}
-                        disabled={!selectedItemId}
-                    />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Price</Form.Label>
-                    <Form.Control
-                        type="number"
-                        placeholder="Enter item price"
-                        name="price"
-                        value={EditItem.price}
-                        required
-                        onChange={handleChange}
-                        disabled={!selectedItemId}
-                    />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Image</Form.Label>
-                    <Form.Control
-                        type="file"
-                        accept="image/png, image/jpeg"
-                        onChange={handleImageChange}
-                    />
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    Save
-                </Button>
-            </Form>
-        </div> 
-        </div> 
+                    <Form.Group>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter item name"
+                            name="name"
+                            value={EditItem.name}
+                            required
+                            onChange={handleChange}
+                            disabled={!selectedItemId}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Description</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            placeholder="Enter item description"
+                            name="description"
+                            value={EditItem.description}
+                            required
+                            onChange={handleChange}
+                            disabled={!selectedItemId}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Price</Form.Label>
+                        <Form.Control
+                            type="number"
+                            placeholder="Enter item price"
+                            name="price"
+                            value={EditItem.price}
+                            required
+                            onChange={handleChange}
+                            disabled={!selectedItemId}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Image</Form.Label>
+                        <Form.Control
+                            type="file"
+                            accept="image/png, image/jpeg"
+                            onChange={handleImageChange}
+                        />
+                    </Form.Group>
+                    <Button variant="primary" type="submit">
+                        Save
+                    </Button>
+                </Form>
+            </div>
+        </div>
     );
 };
 

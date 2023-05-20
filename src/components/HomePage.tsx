@@ -1,9 +1,9 @@
 import "./HomePage.css"
 import land from "../images/land.png"
 import { Button, Col, Row } from 'react-bootstrap';
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; 
 const HomePage = () =>
-{
+{ 
     return(
         <div className="MainHome">
             <Row style={{ width: "100%", height: "100%" }}>
