@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { IItem } from "../../model";
+import { IItem } from "../model";
 import http from "../../http";
 import { Button, Form } from "react-bootstrap";
 

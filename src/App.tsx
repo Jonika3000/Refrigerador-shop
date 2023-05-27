@@ -10,6 +10,8 @@ import AddItemForm from './components/admin/AddItem';
 import ShowItems from './components/default/ShowItems';
 import DeleteItem from './components/admin/DeleteItem';
 import EditItem from './components/admin/EditItem'; 
+import LoginPage from './components/auth/login/LoginPage';
+import RegisterPage from './components/auth/register/RegisterPage';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route path="/" element={<DefaultLayout />}>
           <Route index element={<HomePage />} />
           <Route path="/DefaultCategory" element={<DefaultCategory />} />
+          <Route path='/Login' element={<LoginPage></LoginPage>}/>
+          <Route path='/Register' element={<RegisterPage></RegisterPage>} />
           <Route path='/category/:slug' element={<ShowItems />} />
         </Route>
         <Route path="/Admin/" element={<AdminLayout />}>

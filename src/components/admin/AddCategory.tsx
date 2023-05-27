@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import axios from "axios";
-import { ICategoryItem } from "../../model";
+import { ICategoryItem } from "../model";
 import { useNavigate } from "react-router-dom";
 import http from "../../http";
 
@@ -24,7 +24,7 @@ const AddCategoryForm = () => {
             return;
         }
         http
-            .post<ICategoryItem>("http://phplaravel-993214-3489827.cloudwaysapps.com/api/category", category)
+            .post<ICategoryItem>("api/category", category)
             .then((response) => {
                 setCategory({
                     id: 0, name: "", description: "",

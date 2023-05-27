@@ -24,3 +24,16 @@ export interface IItem {
     imagePrev:File|null,
     categoryId: number
 } 
+export  interface ILogin{
+    email:string,
+    password:string
+}
+export interface IRegister {
+    email: string,
+    password: string,
+    name:string,
+    number:string,
+    photo: File|null,
+    surname:string,
+    firstname:string
+} 

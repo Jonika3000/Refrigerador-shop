@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./DefaultCategory.css"
-import { ICategoryItem, ICategoryResponse, ICategorySearch } from "../../model";
+import { ICategoryItem, ICategoryResponse, ICategorySearch } from "../model";
 import axios from "axios";
 import classNames from "classnames";
 import { Link, useSearchParams } from "react-router-dom";

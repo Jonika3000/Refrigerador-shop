@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap"; 
-import { ICategoryItem, IItem } from "../../model"; 
+import { ICategoryItem, IItem } from "../model"; 
 import http from "../../http";
 
 const AddItemForm = () => {
@@ -73,7 +73,11 @@ const AddItemForm = () => {
     /* отримання данних категорій з серверу */
     const [list, setList] = useState<ICategoryItem[]>([]);
     useEffect(() => {
-        http.get<ICategoryItem[]>('api/clearCategory')
+        http.get<ICategoryItem[]>('api/clearCategory', {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
             .then(resp => {
                 setList(resp.data);
                 console.log(resp.data);

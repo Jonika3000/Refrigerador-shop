@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { ICategoryItem, IItem } from "../../model";
+import { ICategoryItem, IItem } from "../model";
 import http from "../../http";
 import { useParams } from "react-router-dom";
 import { APP_ENV } from "../../env";

@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import http from "../../http";
-import { IItem } from "../../model";
+import { IItem } from "../model";
 import { Button, Form, Modal } from "react-bootstrap";
 
 const DeleteItem = () => {
