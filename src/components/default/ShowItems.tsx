@@ -5,6 +5,8 @@ import http from "../../http";
 import { useParams } from "react-router-dom";
 import { APP_ENV } from "../../env";
 import "./ShowItems.css";
+import React from "react";
+import Loading from "./Loading";
 
 interface RouteParams {
     [key: string]: string | undefined;
@@ -17,16 +19,34 @@ const ShowItems: React.FC<ShowItemsProps> = () => {
     const [data, setData] = useState<IItem[]>([]);
     const [dataCategory, setDataCategory] = useState<ICategoryItem[]>([]);
     const { slug } = useParams<RouteParams>();
+    const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
+    const [error, setError]: [string, (error: string) => void] = React.useState("");
+
     useEffect(() => {
-        http.get(`api/category/${slug}`).then((resp) => {
-            setDataCategory(resp.data.items_data.category);
-            setData(resp.data.items_data.item);
-            console.log(slug);
-            console.log(Array.from(dataCategory));
-        });
+        const fetchData = async (slug: string | undefined) => {
+            try {
+                const response = await http.get(`api/category/${slug}`);
+                await setDataCategory(response.data.items_data.category);
+                await setData(response.data.items_data.item);
+                await setLoading(false);
+                console.log(slug);
+                console.log(Array.from(dataCategory));
+            }
+            catch (error: any) {
+                const errorMessage =
+                    error.code === "ECONNABORTED"
+                        ? "Минув тайм-аут"
+                        : error.response && error.response.status === 404
+                            ? "Ресурс не знайдено"
+                            : "Сталася неочікувана помилка";
+                setError(errorMessage);
+                setLoading(false);
+            }
+        };
+        fetchData(slug);
     }, [slug]);
-    const categoryView = dataCategory.length > 0 && dataCategory.map((Category) => ( 
-         <li key={Category.id}>{Category.name}</li>
+    const categoryView = dataCategory.length > 0 && dataCategory.map((Category) => (
+        <li key={Category.id}>{Category.name}</li>
     ));
     const dataView = data.map((data) => (
         <div className="Product">
@@ -39,37 +59,71 @@ const ShowItems: React.FC<ShowItemsProps> = () => {
                         <span className="text-center">
                             <i className="fa fa-rupee">
                             </i>
-                            {data.price}$</span> 
+                            {data.price}$</span>
                     </div>
                 </div>
             </div>
         </div>
 
     ));
-    return (
-        <>
-            <div className="wrapPage">
-                <Row>
-                    <Col xs="2">
-                        <div className="category">
-                            <h1>Categories:</h1>
-                            <ul>
-                            {categoryView}
-                            </ul>
+    if (loading == false && error == "") {
+        return (
+            <>
+                <div className="wrapPage">
+                    <Row>
+                        <Col xs="2">
+                            <div className="category">
+                                <h1>Categories:</h1>
+                                <ul>
+                                    {categoryView}
+                                </ul>
+                            </div>
+                        </Col>
+                        <Col xs="10">
+                            <Row>
+                                <h1>Items:</h1>
+                                {dataView}
+                            </Row>
+                        </Col>
+                    </Row>
+
+                </div>
+
+            </>
+        )
+    }
+    else if (loading == false && error != '') {
+        return (
+            <div className="MainHome">
+                <div className="CenterContent">
+                    <div className="Info">
+                        <div className='center'>
+                            <a>{error}
+                                <p></p>
+                            </a>
                         </div>
-                    </Col>
-                    <Col xs="10">
-                        <Row>
-                            <h1>Items:</h1>
-                            {dataView}
-                        </Row>
-                    </Col>
-                </Row>
-
+                    </div>
+                </div>
             </div>
-
-        </>
-    )
+        );
+    }
+    else if (loading == true) {
+        return (
+            <div className="MainHome">
+                <div className="CenterContent">
+                    <div className='center'>
+                        <Loading></Loading>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    else {
+        return (
+            <>
+            </>
+        );
+    }
 };
 
 export default ShowItems;

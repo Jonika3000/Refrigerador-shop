@@ -181,7 +181,7 @@ const RegisterPage = ()=>{
                                 required  
                             />
                         </Form.Group> 
-                        <Button className="ButtonShop" style={{ margin: "0" }} type="submit">Login</Button>
+                        <Button className="ButtonShop" style={{ margin: "0" }} type="submit">Register</Button>
                     </Form>
                 </div>
             </div>

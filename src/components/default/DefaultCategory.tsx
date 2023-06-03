@@ -6,11 +6,13 @@ import classNames from "classnames";
 import { Link, useSearchParams } from "react-router-dom";
 import { APP_ENV } from "../../env";
 import http from "../../http";
+import Loading from "./Loading";
 
 const DefaultCategory = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     console.log("page = ", searchParams.get("page"));
-
+    const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
+    const [error, setError]: [string, (error: string) => void] = React.useState("");
     const [search, setSearch] = useState<ICategorySearch>({
         page: searchParams.get("page") || 1,
     });
@@ -23,24 +25,35 @@ const DefaultCategory = () => {
     });
 
     useEffect(() => {
-        http
-            .get<ICategoryResponse>(`api/category`, {
-                params: search,
-            })
-            .then((resp) => {
-                setCategory(resp.data);
-            })
-            .catch((bad) => {
-                console.log("Bad request", bad);
-            });
+        fetchProductImages(search);
     }, [search]);
+    const fetchProductImages = async (search: ICategorySearch) => {
+        try {
+            const response = await http.get<ICategoryResponse>(`api/category`, {
+                params: search,
+            });
+            setCategory(response.data);
+            setLoading(false);
+            console.log(response);
+        } catch (error: any) {
+            const errorMessage =
+                error.code === "ECONNABORTED"
+                    ? "Минув тайм-аут"
+                    : error.response && error.response.status === 404
+                        ? "Ресурс не знайдено"
+                        : "Сталася неочікувана помилка";
+            setError(errorMessage);
+            setLoading(false);
+        }
+    };
+
 
     const { data, last_page, current_page, total } = category;
 
     const dataView = data.map((category) => (
         <li key={category.id}><a>{category.name}</a></li>
     ));
-    const pageRange = 2;  
+    const pageRange = 2;
     const startPage = Math.max(1, current_page - pageRange);
     const endPage = Math.min(last_page, current_page + pageRange);
 
@@ -80,25 +93,59 @@ const DefaultCategory = () => {
             </li>
         );
     });
-    return (
-        <>
-            <div className="MainHome">
-                <div className="CenterContent">
-                    <div>
-                        <ul className="CategoryList">
-                            <li style={{ fontSize: "30px", cursor: "default" }}>Choose Category:</li>
-                            {dataView}
-                        </ul>
-                        <div className="pagination justify-content-center"
-                        style={{marginTop:"3rem"}}>
-                            <ul>{pagination}</ul>
+    if (loading == false && error == "") {
+        return (
+            <>
+                <div className="MainHome">
+                    <div className="CenterContent">
+                        <div>
+                            <ul className="CategoryList">
+                                <li style={{ fontSize: "30px", cursor: "default" }}>Choose Category:</li>
+                                {dataView}
+                            </ul>
+                            <div className="pagination justify-content-center"
+                                style={{ marginTop: "3rem" }}>
+                                <ul>{pagination}</ul>
+                            </div>
                         </div>
-                    </div> 
+                    </div>
+
                 </div>
-              
+            </>
+        );
+    }
+    else if (loading == false && error != '') {
+        return (
+            <div className="MainHome">
+                <div className="CenterContent"> 
+                        <div className="Info">
+                            <div className='center'>
+                                <a>{error}
+                                    <p></p> 
+                                </a>
+                            </div> 
+                    </div>
+                </div> 
             </div>
-        </>
-    );
+        );
+    }
+    else if (loading == true) {
+        return (
+            <div className="MainHome">
+                <div className="CenterContent"> 
+                        <div className='center'>
+                            <Loading></Loading>
+                        </div>  
+                </div>
+            </div>
+        );
+    }
+    else {
+        return (
+            <>
+            </>
+        );
+    }
 }
 
 export default DefaultCategory;
