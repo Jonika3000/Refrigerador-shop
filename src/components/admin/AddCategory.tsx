@@ -80,6 +80,24 @@ const AddCategoryForm = () => {
                             Please enter a category description.
                         </Form.Control.Feedback>
                     </Form.Group>
+                    <Form.Group className="mb-3" controlId="formCategoryDescription">
+                        <Form.Label style={{
+                            color: 'white',
+                            fontSize: "30px"
+                        }}>Category slug</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter category slug"
+                            name="slug"
+                            value={category.slug}
+                            required
+                            onChange={handleChange}
+                        />
+                        <Form.Control.Feedback
+                            type="invalid">
+                            Please enter a category slug.
+                        </Form.Control.Feedback>
+                    </Form.Group>
                     <Button className="ButtonShop" style={{margin:"0"}} type="submit">Add</Button>
                 </Form>
             </div>

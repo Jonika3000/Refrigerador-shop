@@ -51,7 +51,7 @@ const DefaultCategory = () => {
     const { data, last_page, current_page, total } = category;
 
     const dataView = data.map((category) => (
-        <li key={category.id}><a>{category.name}</a></li>
+        <li key={category.id}><Link to={`/category/${category.slug}`}>{category.name}</Link></li>
     ));
     const pageRange = 2;
     const startPage = Math.max(1, current_page - pageRange);

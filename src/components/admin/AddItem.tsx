@@ -5,6 +5,7 @@ import http from "../../http";
 
 const AddItemForm = () => {
     const [validated, setValidated] = useState(false);
+    let [itemImages, setItemImages] = useState<File[]>([]);
     const [item, setItem] = useState<IItem>({
         id: 0,
         name: "",
@@ -13,6 +14,47 @@ const AddItemForm = () => {
         price:0,
         categoryId: 0
     });
+    async function uploadImagesInOrder(itemImages: File[], addedItemId: number) {
+        for (const image of itemImages) {
+            const formData = new FormData();
+            formData.append('url', image, image.name);
+            formData.append('itemId', addedItemId.toString());
+            try {
+                await http.post('api/AddImage', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+            } catch (error: any) {
+               console.log(error);
+            }
+        }
+    }
+    const handleRemoveImage = (index: number) => {
+        const updatedImages = [...itemImages];
+        updatedImages.splice(index, 1);
+        setItemImages(updatedImages);
+    };
+    let SelectedImages = itemImages.map((img, index) => (
+        <div
+            key={index}
+            style={{ display: "flex", alignItems: "center", margin: "10px" }} 
+        >
+            <img
+                src={URL.createObjectURL(img)}
+                style={{ maxHeight: "100px", maxWidth: "100px", objectFit: "cover" }}
+                alt={`Image ${index + 1}`}
+            />
+            <Button
+                variant="danger"
+                size="sm"
+                style={{ marginLeft: "10px" }}
+                onClick={() => handleRemoveImage(index)}
+            >
+                Remove
+            </Button>
+        </div>
+    ));
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         event.stopPropagation();
@@ -30,16 +72,18 @@ const AddItemForm = () => {
         if (item.imagePrev != null) {
             formData.append('image', item.imagePrev, item.imagePrev.name);
         } 
-       console.log( Array.from(formData));
-      /*  виконання пост операції */
-        http.post<IItem>('api/AddItem', formData, {
-           /*  без цього не буде працювати робота з файлами (добавлення параметрів)*/
+       console.log( Array.from(formData)); 
+        http.post<IItem>('api/AddItem', formData, { 
             headers: {
                 "Content-Type": "multipart/form-data"
             }
         }) 
-            .then((response) => {
-                /* обнуления данних */
+            .then(async (response) => { 
+                const addedItemId = response.data.id;
+                if (itemImages.length > 0) {
+                    await uploadImagesInOrder(itemImages, addedItemId);
+                    setItemImages([]);
+                }
                 setItem({
                     id: 0,
                     name: "",
@@ -61,8 +105,7 @@ const AddItemForm = () => {
             ...prevState,
             [name]: value,
         }));
-    };
-    /* триггер на зміну данних в комбо боксі */
+    }; 
     function ComboBoxChange(event: React.ChangeEvent<HTMLSelectElement>) {
         setItem({
             ...item,
@@ -132,6 +175,29 @@ const AddItemForm = () => {
                             }}
                         /> 
                     </Form.Group> 
+                    <Form.Group className="mb-3" controlId="formItemImages">
+                        <Form.Label style={{
+                            color: 'white',
+                            fontSize: "30px"
+                        }}>Images</Form.Label>
+                        <Form.Control
+                            type="file"
+                            multiple
+                            required
+                            accept=".jpg,.png,.jpeg"
+                            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                                const files = event.target.files;
+                                if (files) {
+                                    const newImages = [...itemImages, ...Array.from(files)];
+                                    setItemImages(newImages);
+                                }
+                            }}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Please select at least one image.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    {SelectedImages}
                     <Form.Group className="mb-3" controlId="formItemDescription">
                         <Form.Label style={{
                             color: 'white',
