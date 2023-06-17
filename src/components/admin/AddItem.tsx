@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap"; 
 import { ICategoryItem, IItem } from "../model"; 
 import http from "../../http";
+import { Editor } from "@tinymce/tinymce-react";
 
 const AddItemForm = () => {
     const [validated, setValidated] = useState(false);
@@ -14,6 +15,7 @@ const AddItemForm = () => {
         price:0,
         categoryId: 0
     });
+    const [content, setContent] = useState('');
     async function uploadImagesInOrder(itemImages: File[], addedItemId: number) {
         for (const image of itemImages) {
             const formData = new FormData();
@@ -58,8 +60,7 @@ const AddItemForm = () => {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         event.stopPropagation();
-        const form = event.currentTarget;
-        /* валідація */
+        const form = event.currentTarget; 
         if (form.checkValidity() === false || !item.categoryId) {
             setValidated(true);
             return;
@@ -71,8 +72,7 @@ const AddItemForm = () => {
         formData.append('categoryId', item.categoryId.toString()); 
         if (item.imagePrev != null) {
             formData.append('image', item.imagePrev, item.imagePrev.name);
-        } 
-       console.log( Array.from(formData)); 
+        }   
         http.post<IItem>('api/AddItem', formData, { 
             headers: {
                 "Content-Type": "multipart/form-data"
@@ -133,7 +133,13 @@ const AddItemForm = () => {
     const dataCategory = list.map((category) => (
         <option key={category.id} value={category.id}>{category.name}</option>
     ));
- 
+    const handleEditorChange = (content: string) => {
+        setItem({
+            ...item,
+            description: content
+        });
+        setContent(content);
+    };
     return (
         <div className="MainHome">
             <div className="CenterContent">
@@ -203,13 +209,17 @@ const AddItemForm = () => {
                             color: 'white',
                             fontSize: "30px"
                         }}>Item description</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter item description"
-                            name="description"
-                            value={item.description}
-                            required
-                            onChange={handleChange}
+                        <Editor
+                            onEditorChange={handleEditorChange}
+                            apiKey="gbg6w25sopzhl7ee9p2hrjmm5ch3cwawgel5p0fva2ig5rlf"
+                            init={{
+                                height: 500,
+                                plugins: 'link textcolor colorpicker fullscreen',
+                                toolbar: 'undo redo | bold italic | alignleft aligncenter alignright  | forecolor backcolor | fullscreen',
+                                color_picker_callback: function (callback: (arg0: string) => void, value: any) {
+                                    callback('#FF00FF');
+                                }
+                            }}
                         />
                         <Form.Control.Feedback
                             type="invalid">
